@@ -384,7 +384,7 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
         <div class="form-row">
           <div class="form-group full">
             <label>Drop-off Location</label>
-            <select id="dropoffLoc">
+            <select id="dropoffLoc" onchange="calcPrice()">
               <option value="0">Gregorio Luperon Airport (POP) — Sosua (Free)</option>
               <option value="80">Cibao International Airport (STI) — Santiago (+$80)</option>
               <option value="350">Punta Cana Airport (PUJ) (+$350)</option>
@@ -780,7 +780,9 @@ function calcPrice(){
   const pd = document.getElementById('pickupDate').value;
   const rd = document.getElementById('returnDate').value;
   const rate = parseInt(document.getElementById('vehicleSelect').value)||0;
-  const airportFee = parseInt(document.getElementById('pickupLoc').value)||0;
+  const pickupFee = parseInt(document.getElementById('pickupLoc').value)||0;
+  const dropoffFee = parseInt(document.getElementById('dropoffLoc').value)||0;
+  const airportFee = pickupFee + dropoffFee;
   const box = document.getElementById('priceBox');
   if(pd && rd && rate>0){
     const days = Math.max(1,Math.round((new Date(rd)-new Date(pd))/(86400000)));
@@ -812,9 +814,11 @@ function sendWhatsApp(){
   const flight = document.getElementById('clientFlight').value || 'Not provided';
   const pickupSel = document.getElementById('pickupLoc');
   const pickup = pickupSel.options[pickupSel.selectedIndex].text;
-  const airportFee = parseInt(pickupSel.value)||0;
+  const pickupFee = parseInt(pickupSel.value)||0;
   const dropoffSel = document.getElementById('dropoffLoc');
   const dropoff = dropoffSel ? dropoffSel.options[dropoffSel.selectedIndex].text : 'Not provided';
+  const dropoffFee = dropoffSel ? (parseInt(dropoffSel.value)||0) : 0;
+  const airportFee = pickupFee + dropoffFee;
   const pd = document.getElementById('pickupDate').value;
   const pt = document.getElementById('pickupTime').value;
   const rd = document.getElementById('returnDate').value;
