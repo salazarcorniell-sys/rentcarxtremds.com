@@ -812,8 +812,9 @@ function sendWhatsApp(){
   const flight = document.getElementById('clientFlight').value || 'Not provided';
   const pickupSel = document.getElementById('pickupLoc');
   const pickup = pickupSel.options[pickupSel.selectedIndex].text;
+  const airportFee = parseInt(pickupSel.value)||0;
   const dropoffSel = document.getElementById('dropoffLoc');
-  const dropoff = dropoffSel.options[dropoffSel.selectedIndex].text;
+  const dropoff = dropoffSel ? dropoffSel.options[dropoffSel.selectedIndex].text : 'Not provided';
   const pd = document.getElementById('pickupDate').value;
   const pt = document.getElementById('pickupTime').value;
   const rd = document.getElementById('returnDate').value;
@@ -825,8 +826,9 @@ function sendWhatsApp(){
     const days = Math.max(1,Math.round((new Date(rd)-new Date(pd))/(86400000)));
     const sub = days*rate;
     const tax = Math.round(sub*0.18);
-    const total = sub+tax;
-    priceLine = '\n\nPRICE ESTIMATE:\nSubtotal: $'+sub+' USD ('+days+' days x $'+rate+'/day)\nITBIS (18%): $'+tax+' USD\nTOTAL: $'+total+' USD';
+    const total = sub+tax+airportFee;
+    let airportLine = airportFee>0 ? '\nAirport transfer: $'+airportFee+' USD' : '';
+    priceLine = '\n\nPRICE ESTIMATE:\nSubtotal: $'+sub+' USD ('+days+' days x $'+rate+'/day)\nITBIS (18%): $'+tax+' USD'+airportLine+'\nTOTAL: $'+total+' USD';
   }
   const msg = 'Hello! I would like to book a rental:\n\nCLIENT INFO:\nName: '+name+'\nPhone: '+phone+'\nFlight: '+flight+'\n\nRENTAL DETAILS:\nPickup location: '+pickup+'\nDrop-off location: '+dropoff+'\nDate: '+pd+' at '+pt+'\nReturn date: '+rd+'\nVehicle: '+vehicle+priceLine+'\n\nPlease confirm availability.';
   window.open('https://wa.me/18099993324?text='+encodeURIComponent(msg),'_blank');
