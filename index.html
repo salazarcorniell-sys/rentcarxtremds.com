@@ -380,6 +380,20 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
         </div>
 
         <div class="form-row">
+          <div class="form-group full">
+            <label>Drop-off Location</label>
+            <select id="dropoffLoc">
+              <option value="0">Gregorio Luperon Airport (POP) — Sosua (Free)</option>
+              <option value="80">Cibao International Airport (STI) — Santiago (+$80)</option>
+              <option value="350">Punta Cana Airport (PUJ) (+$350)</option>
+              <option value="90">Las Americas Airport (SDQ) — Santo Domingo (+$90)</option>
+              <option value="0">X-TREM Main Office — Sosua (Free)</option>
+              <option value="0">My Address (specify below) (Free)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
           <div class="form-group">
             <label>Pickup Date</label>
             <input type="date" id="pickupDate" onchange="calcPrice()">
@@ -794,7 +808,10 @@ function sendWhatsApp(){
   const name = document.getElementById('clientName').value || 'Not provided';
   const phone = document.getElementById('clientPhone').value || 'Not provided';
   const flight = document.getElementById('clientFlight').value || 'Not provided';
-  const pickup = document.getElementById('pickupLoc').value;
+  const pickupSel = document.getElementById('pickupLoc');
+  const pickup = pickupSel.options[pickupSel.selectedIndex].text;
+  const dropoffSel = document.getElementById('dropoffLoc');
+  const dropoff = dropoffSel.options[dropoffSel.selectedIndex].text;
   const pd = document.getElementById('pickupDate').value;
   const pt = document.getElementById('pickupTime').value;
   const rd = document.getElementById('returnDate').value;
@@ -809,7 +826,7 @@ function sendWhatsApp(){
     const total = sub+tax;
     priceLine = '\n\nPRICE ESTIMATE:\nSubtotal: $'+sub+' USD ('+days+' days x $'+rate+'/day)\nITBIS (18%): $'+tax+' USD\nTOTAL: $'+total+' USD';
   }
-  const msg = 'Hello! I would like to book a rental:\n\nCLIENT INFO:\nName: '+name+'\nPhone: '+phone+'\nFlight: '+flight+'\n\nRENTAL DETAILS:\nPickup: '+pickup+'\nDate: '+pd+' at '+pt+'\nReturn date: '+rd+'\nVehicle: '+vehicle+priceLine+'\n\nPlease confirm availability.';
+  const msg = 'Hello! I would like to book a rental:\n\nCLIENT INFO:\nName: '+name+'\nPhone: '+phone+'\nFlight: '+flight+'\n\nRENTAL DETAILS:\nPickup location: '+pickup+'\nDrop-off location: '+dropoff+'\nDate: '+pd+' at '+pt+'\nReturn date: '+rd+'\nVehicle: '+vehicle+priceLine+'\n\nPlease confirm availability.';
   window.open('https://wa.me/18099993324?text='+encodeURIComponent(msg),'_blank');
 }
 </script>
