@@ -382,12 +382,12 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
           <div class="form-group full">
             <label>Pickup Location</label>
             <select id="pickupLoc" onchange="calcPrice()">
-              <option value="0">Gregorio Luperon Airport (POP) — Sosua (Free)</option>
-              <option value="80">Cibao International Airport (STI) — Santiago (+$80)</option>
-              <option value="350">Punta Cana Airport (PUJ) (+$350)</option>
-              <option value="90">Las Americas Airport (SDQ) — Santo Domingo (+$90)</option>
-              <option value="0">X-TREM Main Office — Sosua (Free)</option>
-              <option value="0">My Address (specify below) (Free)</option>
+              <option value="0">Gregorio Luperon Airport (POP) — Sosua</option>
+              <option value="80">Cibao International Airport (STI) — Santiago</option>
+              <option value="350">Punta Cana Airport (PUJ)</option>
+              <option value="90">Las Americas Airport (SDQ) — Santo Domingo</option>
+              <option value="0">X-TREM Main Office — Sosua</option>
+              <option value="0">My Address (specify below)</option>
             </select>
           </div>
         </div>
@@ -396,12 +396,12 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
           <div class="form-group full">
             <label>Drop-off Location</label>
             <select id="dropoffLoc" onchange="calcPrice()">
-              <option value="0">Gregorio Luperon Airport (POP) — Sosua (Free)</option>
-              <option value="80">Cibao International Airport (STI) — Santiago (+$80)</option>
-              <option value="350">Punta Cana Airport (PUJ) (+$350)</option>
-              <option value="90">Las Americas Airport (SDQ) — Santo Domingo (+$90)</option>
-              <option value="0">X-TREM Main Office — Sosua (Free)</option>
-              <option value="0">My Address (specify below) (Free)</option>
+              <option value="0">Gregorio Luperon Airport (POP) — Sosua</option>
+              <option value="80">Cibao International Airport (STI) — Santiago</option>
+              <option value="350">Punta Cana Airport (PUJ)</option>
+              <option value="90">Las Americas Airport (SDQ) — Santo Domingo</option>
+              <option value="0">X-TREM Main Office — Sosua</option>
+              <option value="0">My Address (specify below)</option>
             </select>
           </div>
         </div>
@@ -814,53 +814,44 @@ function filterCars(cat,btn){
   });
 }
 
-function getInsuranceRates(vehicleName){
-  const large = ['Cherokee','Explorer','Tahoe','Traverse'];
-  for(const v of large){ if(vehicleName.includes(v)) return {reduced:20, zero:25}; }
-  const small = ['Picanto','Rio','Tucson','Equinox'];
-  for(const v of small){ if(vehicleName.includes(v)) return {reduced:15, zero:20}; }
+function getInsuranceRates(n){
+  if(['Cherokee','Explorer','Tahoe','Traverse'].some(v=>n.includes(v))) return {reduced:20,zero:25};
+  if(['Picanto','Rio','Tucson','Equinox'].some(v=>n.includes(v))) return {reduced:15,zero:20};
   return null;
 }
-
 function calcPrice(){
-  const pd = document.getElementById('pickupDate').value;
-  const rd = document.getElementById('returnDate').value;
-  const vSel = document.getElementById('vehicleSelect');
-  const rate = parseInt(vSel.value)||0;
-  const vehicleName = vSel.options[vSel.selectedIndex].text;
-  const pickupFee = parseInt(document.getElementById('pickupLoc').value)||0;
-  const dropoffFee = parseInt(document.getElementById('dropoffLoc').value)||0;
-  const airportFee = pickupFee + dropoffFee;
-  const box = document.getElementById('priceBox');
-  const insBox = document.getElementById('insuranceBox');
-  const insRates = getInsuranceRates(vehicleName);
-  if(rate > 0 && insRates){
-    insBox.classList.add('show');
-  } else {
-    insBox.classList.remove('show');
-    document.querySelector('input[name="insurance"][value="none"]').checked = true;
-  }
-  if(pd && rd && rate>0){
-    const days = Math.max(1,Math.round((new Date(rd)-new Date(pd))/(86400000)));
-    const sub = days*rate;
-    const tax = Math.round(sub*0.18);
-    const insVal = document.querySelector('input[name="insurance"]:checked').value;
-    const insDailyRate = insRates ? (insVal==='reduced' ? insRates.reduced : insVal==='zero' ? insRates.zero : 0) : 0;
-    const insFee = days*insDailyRate;
-    const grandTotal = sub+tax+airportFee+insFee;
-    document.getElementById('daysLabel').textContent = days+(days===1?' day':' days');
-    document.getElementById('rateLabel').textContent = '$'+rate+' USD/day';
-    document.getElementById('subtotalLabel').textContent = '$'+sub+' USD';
-    document.getElementById('taxLabel').textContent = '$'+tax+' USD';
-    const airRow = document.getElementById('airportFeeRow');
+  const pd=document.getElementById('pickupDate').value;
+  const rd=document.getElementById('returnDate').value;
+  const vSel=document.getElementById('vehicleSelect');
+  const rate=parseInt(vSel.value)||0;
+  const vName=vSel.options[vSel.selectedIndex].text;
+  const pickupFee=parseInt(document.getElementById('pickupLoc').value)||0;
+  const dropoffFee=parseInt(document.getElementById('dropoffLoc').value)||0;
+  const airportFee=pickupFee+dropoffFee;
+  const box=document.getElementById('priceBox');
+  const insBox=document.getElementById('insuranceBox');
+  const insRates=getInsuranceRates(vName);
+  if(rate>0&&insRates){insBox.classList.add('show');}
+  else{insBox.classList.remove('show');document.querySelector('input[name="insurance"][value="none"]').checked=true;}
+  if(pd&&rd&&rate>0){
+    const days=Math.max(1,Math.round((new Date(rd)-new Date(pd))/86400000));
+    const sub=days*rate;
+    const tax=Math.round(sub*0.18);
+    const insVal=document.querySelector('input[name="insurance"]:checked').value;
+    const insDR=insRates?(insVal==='reduced'?insRates.reduced:insVal==='zero'?insRates.zero:0):0;
+    const insFee=days*insDR;
+    const grandTotal=sub+tax+airportFee+insFee;
+    document.getElementById('daysLabel').textContent=days+(days===1?' day':' days');
+    document.getElementById('rateLabel').textContent='$'+rate+' USD/day';
+    document.getElementById('subtotalLabel').textContent='$'+sub+' USD';
+    document.getElementById('taxLabel').textContent='$'+tax+' USD';
+    const airRow=document.getElementById('airportFeeRow');
     if(airportFee>0){airRow.style.display='flex';document.getElementById('airportFeeLabel').textContent='$'+airportFee+' USD';}else{airRow.style.display='none';}
-    const insRow = document.getElementById('insuranceFeeRow');
+    const insRow=document.getElementById('insuranceFeeRow');
     if(insFee>0){insRow.style.display='flex';document.getElementById('insuranceFeeLabel').textContent='$'+insFee+' USD';}else{insRow.style.display='none';}
-    document.getElementById('totalLabel').textContent = '$'+grandTotal+' USD';
+    document.getElementById('totalLabel').textContent='$'+grandTotal+' USD';
     box.style.display='block';
-  } else {
-    box.style.display='none';
-  }
+  }else{box.style.display='none';}
 }
 
 function sendWhatsApp(){
@@ -880,22 +871,22 @@ function sendWhatsApp(){
   const vSel = document.getElementById('vehicleSelect');
   const vehicle = vSel.options[vSel.selectedIndex].text;
   const rate = parseInt(vSel.value)||0;
-  const insVal = document.querySelector('input[name="insurance"]:checked').value;
-  const insRates2 = getInsuranceRates(vehicle);
-  let priceLine = '';
-  if(pd && rd && rate>0){
-    const days = Math.max(1,Math.round((new Date(rd)-new Date(pd))/(86400000)));
-    const sub = days*rate;
-    const tax = Math.round(sub*0.18);
-    const insDailyRate = insRates2 ? (insVal==='reduced' ? insRates2.reduced : insVal==='zero' ? insRates2.zero : 0) : 0;
-    const insFee = days*insDailyRate;
-    const total = sub+tax+airportFee+insFee;
-    let airportLine = airportFee>0 ? '\nAirport transfer: $'+airportFee+' USD' : '';
-    let insLine = '';
-    if(insVal==='reduced') insLine = '\nInsurance - Reduced deductible ($'+insDailyRate+'/day): $'+insFee+' USD - Deductible: $500 USD';
-    else if(insVal==='zero') insLine = '\nInsurance - Zero deductible ($'+insDailyRate+'/day): $'+insFee+' USD - Deductible: $0 USD';
-    else insLine = '\nInsurance: No coverage - Deductible: $1,300 USD';
-    priceLine = '\n\nPRICE ESTIMATE:\nSubtotal: $'+sub+' USD ('+days+' days x $'+rate+'/day)\nITBIS (18%): $'+tax+' USD'+airportLine+insLine+'\nTOTAL: $'+total+' USD';
+  const insVal=document.querySelector('input[name="insurance"]:checked').value;
+  const insRates2=getInsuranceRates(vehicle);
+  let priceLine='';
+  if(pd&&rd&&rate>0){
+    const days=Math.max(1,Math.round((new Date(rd)-new Date(pd))/86400000));
+    const sub=days*rate;
+    const tax=Math.round(sub*0.18);
+    const insDR=insRates2?(insVal==='reduced'?insRates2.reduced:insVal==='zero'?insRates2.zero:0):0;
+    const insFee=days*insDR;
+    const total=sub+tax+airportFee+insFee;
+    let airportLine=airportFee>0?'\nAirport transfer: $'+airportFee+' USD':'';
+    let insLine='';
+    if(insVal==='reduced') insLine='\nInsurance (Reduced deductible $500): $'+insFee+' USD';
+    else if(insVal==='zero') insLine='\nInsurance (Zero deductible): $'+insFee+' USD';
+    else insLine='\nInsurance: No coverage (Deductible $1,300)';
+    priceLine='\n\nPRICE ESTIMATE:\nSubtotal: $'+sub+' USD ('+days+' days x $'+rate+'/day)\nITBIS (18%): $'+tax+' USD'+airportLine+insLine+'\nTOTAL: $'+total+' USD';
   }
   const msg = 'Hello! I would like to book a rental:\n\nCLIENT INFO:\nName: '+name+'\nPhone: '+phone+'\nFlight: '+flight+'\n\nRENTAL DETAILS:\nPickup location: '+pickup+'\nDrop-off location: '+dropoff+'\nDate: '+pd+' at '+pt+'\nReturn date: '+rd+'\nVehicle: '+vehicle+priceLine+'\n\nPlease confirm availability.';
   window.open('https://wa.me/18099993324?text='+encodeURIComponent(msg),'_blank');
