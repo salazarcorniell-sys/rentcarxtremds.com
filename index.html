@@ -135,8 +135,7 @@ nav{position:fixed;inset:0 0 auto;z-index:200;height:68px;display:flex;align-ite
 .ins-option:last-child{margin-bottom:0}
 .ins-option input[type=radio]{width:16px;height:16px;accent-color:var(--green);flex-shrink:0;margin-top:2px;cursor:pointer}
 .ins-option-body{flex:1}
-.ins-option-title{font-size:.82rem;font-weight:600;color:var(--dark);display:flex;justify-content:space-between;align-items:center}
-.ins-option-title .ins-price{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:var(--green)}
+.ins-option-title{font-size:.82rem;font-weight:600;color:var(--dark)}
 .ins-option-desc{font-size:.7rem;color:var(--muted);margin-top:.15rem}
 .ins-option:has(input:checked){background:white;border-color:var(--green)}
 .ins-option.none-opt:has(input:checked){border-color:var(--border);background:#fafafa}
@@ -452,21 +451,21 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
           <label class="ins-option none-opt">
             <input type="radio" name="insurance" value="none" checked onchange="calcPrice()">
             <div class="ins-option-body">
-              <div class="ins-option-title">No coverage <span class="ins-price" style="color:var(--muted);font-size:.78rem">$0/day</span></div>
-              <div class="ins-option-desc">Deductible: <strong>$1,300 USD</strong> in case of incident</div>
+              <div class="ins-option-title">No coverage</div>
+              <div class="ins-option-desc">Deductible: <strong>$1,300 USD</strong></div>
             </div>
           </label>
           <label class="ins-option">
             <input type="radio" name="insurance" value="reduced" onchange="calcPrice()">
             <div class="ins-option-body">
-              <div class="ins-option-title">Reduced deductible <span class="ins-price" id="insReducedPrice">$15/day</span></div>
-              <div class="ins-option-desc">Deductible drops from $1,300 → <strong style="color:var(--green)">$500 USD</strong></div>
+              <div class="ins-option-title">Reduced deductible</div>
+              <div class="ins-option-desc">Deductible: <strong style="color:var(--green)">$500 USD</strong></div>
             </div>
           </label>
           <label class="ins-option">
             <input type="radio" name="insurance" value="zero" onchange="calcPrice()">
             <div class="ins-option-body">
-              <div class="ins-option-title">Zero deductible <span class="ins-price" id="insZeroPrice">$20/day</span></div>
+              <div class="ins-option-title">Zero deductible</div>
               <div class="ins-option-desc">Full protection — deductible: <strong style="color:var(--green)">$0 USD</strong></div>
             </div>
           </label>
@@ -479,7 +478,7 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
           <div class="price-row"><span>Subtotal</span><span id="subtotalLabel">—</span></div>
           <div class="price-row"><span>ITBIS (18%)</span><span id="taxLabel" style="color:var(--muted)">—</span></div>
           <div class="price-row" id="airportFeeRow" style="display:none"><span>Airport transfer</span><span id="airportFeeLabel" style="color:var(--accent)">—</span></div>
-          <div class="price-row" id="insuranceFeeRow" style="display:none"><span>🛡️ Deductible reduction</span><span id="insuranceFeeLabel" style="color:var(--green)">—</span></div>
+          <div class="price-row" id="insuranceFeeRow" style="display:none"><span>🛡️ Deductible coverage</span><span id="insuranceFeeLabel" style="color:var(--green)">—</span></div>
           <hr class="price-divider">
           <div class="price-total-row">
             <span class="price-total-label">Total (incl. ITBIS)</span>
@@ -835,17 +834,12 @@ function calcPrice(){
   const box = document.getElementById('priceBox');
   const insBox = document.getElementById('insuranceBox');
   const insRates = getInsuranceRates(vehicleName);
-
-  // Show/hide insurance box and update prices
   if(rate > 0 && insRates){
     insBox.classList.add('show');
-    document.getElementById('insReducedPrice').textContent = '$'+insRates.reduced+'/day';
-    document.getElementById('insZeroPrice').textContent = '$'+insRates.zero+'/day';
   } else {
     insBox.classList.remove('show');
     document.querySelector('input[name="insurance"][value="none"]').checked = true;
   }
-
   if(pd && rd && rate>0){
     const days = Math.max(1,Math.round((new Date(rd)-new Date(pd))/(86400000)));
     const sub = days*rate;
@@ -859,19 +853,9 @@ function calcPrice(){
     document.getElementById('subtotalLabel').textContent = '$'+sub+' USD';
     document.getElementById('taxLabel').textContent = '$'+tax+' USD';
     const airRow = document.getElementById('airportFeeRow');
-    if(airportFee>0){
-      airRow.style.display='flex';
-      document.getElementById('airportFeeLabel').textContent = '$'+airportFee+' USD';
-    } else {
-      airRow.style.display='none';
-    }
+    if(airportFee>0){airRow.style.display='flex';document.getElementById('airportFeeLabel').textContent='$'+airportFee+' USD';}else{airRow.style.display='none';}
     const insRow = document.getElementById('insuranceFeeRow');
-    if(insFee>0){
-      insRow.style.display='flex';
-      document.getElementById('insuranceFeeLabel').textContent = '$'+insFee+' USD';
-    } else {
-      insRow.style.display='none';
-    }
+    if(insFee>0){insRow.style.display='flex';document.getElementById('insuranceFeeLabel').textContent='$'+insFee+' USD';}else{insRow.style.display='none';}
     document.getElementById('totalLabel').textContent = '$'+grandTotal+' USD';
     box.style.display='block';
   } else {
@@ -897,20 +881,20 @@ function sendWhatsApp(){
   const vehicle = vSel.options[vSel.selectedIndex].text;
   const rate = parseInt(vSel.value)||0;
   const insVal = document.querySelector('input[name="insurance"]:checked').value;
-  const insRates = getInsuranceRates(vehicle);
+  const insRates2 = getInsuranceRates(vehicle);
   let priceLine = '';
   if(pd && rd && rate>0){
     const days = Math.max(1,Math.round((new Date(rd)-new Date(pd))/(86400000)));
     const sub = days*rate;
     const tax = Math.round(sub*0.18);
-    const insDailyRate = insRates ? (insVal==='reduced' ? insRates.reduced : insVal==='zero' ? insRates.zero : 0) : 0;
+    const insDailyRate = insRates2 ? (insVal==='reduced' ? insRates2.reduced : insVal==='zero' ? insRates2.zero : 0) : 0;
     const insFee = days*insDailyRate;
     const total = sub+tax+airportFee+insFee;
     let airportLine = airportFee>0 ? '\nAirport transfer: $'+airportFee+' USD' : '';
     let insLine = '';
-    if(insVal==='reduced') insLine = '\nInsurance - Reduced deductible ($'+insDailyRate+'/day): $'+insFee+' USD → Deductible: $500 USD';
-    else if(insVal==='zero') insLine = '\nInsurance - Zero deductible ($'+insDailyRate+'/day): $'+insFee+' USD → Deductible: $0 USD';
-    else insLine = '\nInsurance: No coverage → Deductible: $1,300 USD';
+    if(insVal==='reduced') insLine = '\nInsurance - Reduced deductible ($'+insDailyRate+'/day): $'+insFee+' USD - Deductible: $500 USD';
+    else if(insVal==='zero') insLine = '\nInsurance - Zero deductible ($'+insDailyRate+'/day): $'+insFee+' USD - Deductible: $0 USD';
+    else insLine = '\nInsurance: No coverage - Deductible: $1,300 USD';
     priceLine = '\n\nPRICE ESTIMATE:\nSubtotal: $'+sub+' USD ('+days+' days x $'+rate+'/day)\nITBIS (18%): $'+tax+' USD'+airportLine+insLine+'\nTOTAL: $'+total+' USD';
   }
   const msg = 'Hello! I would like to book a rental:\n\nCLIENT INFO:\nName: '+name+'\nPhone: '+phone+'\nFlight: '+flight+'\n\nRENTAL DETAILS:\nPickup location: '+pickup+'\nDrop-off location: '+dropoff+'\nDate: '+pd+' at '+pt+'\nReturn date: '+rd+'\nVehicle: '+vehicle+priceLine+'\n\nPlease confirm availability.';
