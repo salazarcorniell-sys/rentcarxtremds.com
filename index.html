@@ -431,7 +431,8 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
             <label>Vehicle</label>
             <select id="vehicleSelect" onchange="calcPrice()">
               <option value="0">Select a vehicle</option>
-              <option value="20">Scooter / Moto — $20/day</option>
+              <option value="15">Scooter / Moto — $15/day</option>
+              <option value="30">Tauro CXR 250cc — $30/day</option>
               <option value="25">Kia Picanto — $25/day</option>
               <option value="30">Kia Rio — $30/day</option>
               <option value="45">Hyundai Tucson — $45/day</option>
@@ -485,6 +486,9 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
             <span class="price-total-num" id="totalLabel">—</span>
           </div>
           <div class="price-note">* Airport transfer charges may apply — see Airport Pricing section</div>
+          <div style="text-align:right;margin-top:.5rem">
+            <button onclick="saveQuoteImage()" style="background:none;border:none;cursor:pointer;font-size:.65rem;color:var(--muted);display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .4rem;border-radius:4px;transition:color .2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">📷 guardar cotización</button>
+          </div>
         </div>
 
         <button class="search-btn" onclick="sendWhatsApp()">Send Booking Request via WhatsApp</button>
@@ -625,8 +629,19 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
         <div class="car-name">Scooter / Moto</div>
         <div class="car-divider"></div>
         <div class="car-footer">
-          <div><div class="car-from">Day from</div><div class="car-price">$20</div></div>
+          <div><div class="car-from">Day from</div><div class="car-price">$15</div></div>
           <a href="https://wa.me/18099993324?text=Hello!! I want to book the Scooter or Moto" class="car-book-btn">Book Now</a>
+        </div>
+      </div>
+    </div>
+    <div class="car-card" data-cat="adventure">
+      <div class="car-img-wrap"><span class="car-tag">Moto</span><img src="tauro-cxr-250.jpg" alt="Tauro CXR 250cc"></div>
+      <div class="car-body">
+        <div class="car-name">Tauro CXR 250cc</div>
+        <div class="car-divider"></div>
+        <div class="car-footer">
+          <div><div class="car-from">Day from</div><div class="car-price">$30</div></div>
+          <a href="https://wa.me/18099993324?text=Hello!! I want to book the Tauro CXR 250cc" class="car-book-btn">Book Now</a>
         </div>
       </div>
     </div>
@@ -805,7 +820,63 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
 
 <a href="https://wa.me/18099993324?text=Hello!!" class="wa-fab" target="_blank">&#128172;</a>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+function saveQuoteImage(){
+  const panel = document.getElementById('priceBox');
+  // Build a clean summary card off-screen
+  const name = document.getElementById('clientName').value || '—';
+  const vSel = document.getElementById('vehicleSelect');
+  const vehicle = vSel.options[vSel.selectedIndex].text;
+  const pd = document.getElementById('pickupDate').value || '—';
+  const rd = document.getElementById('returnDate').value || '—';
+  const days = document.getElementById('daysLabel').textContent;
+  const rate = document.getElementById('rateLabel').textContent;
+  const subtotal = document.getElementById('subtotalLabel').textContent;
+  const tax = document.getElementById('taxLabel').textContent;
+  const total = document.getElementById('totalLabel').textContent;
+  const airRow = document.getElementById('airportFeeRow');
+  const airportLine = airRow.style.display!=='none' ? `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">Airport transfer</span><span style="font-weight:700">${document.getElementById('airportFeeLabel').textContent}</span></div>` : '';
+  const insRow = document.getElementById('insuranceFeeRow');
+  const insLine = insRow.style.display!=='none' ? `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">🛡️ Deductible coverage</span><span style="font-weight:700;color:#1a3a2a">${document.getElementById('insuranceFeeLabel').textContent}</span></div>` : '';
+
+  const card = document.createElement('div');
+  card.style.cssText = 'position:fixed;left:-9999px;top:0;width:320px;background:white;border-radius:16px;padding:24px;font-family:Plus Jakarta Sans,sans-serif;box-shadow:0 8px 40px rgba(0,0,0,.15)';
+  card.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+      <div style="width:28px;height:28px;background:#e05c2a;display:flex;align-items:center;justify-content:center;border-radius:4px">
+        <svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M5 11l1.5-4.5h11L19 11M5 11H3v2h2v3h2v-3h10v3h2v-3h2v-2h-2M5 11h14M7.5 14.5a1 1 0 100 2 1 1 0 000-2zm9 0a1 1 0 100 2 1 1 0 000-2z"/></svg>
+      </div>
+      <span style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;letter-spacing:2px">X-TREM</span>
+    </div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#7a7369;margin-bottom:4px">Cotización</div>
+    <div style="font-size:17px;font-weight:700;margin-bottom:2px">${name}</div>
+    <div style="font-size:12px;color:#7a7369;margin-bottom:16px">${vehicle}</div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#7a7369;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #e8e2d8">
+      <span>📅 ${pd}</span><span>→ ${rd}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">Días</span><span style="font-weight:700">${days}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">Tarifa/día</span><span style="font-weight:700">${rate}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">Subtotal</span><span style="font-weight:700">${subtotal}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">ITBIS (18%)</span><span style="font-weight:700;color:#7a7369">${tax}</span></div>
+    ${airportLine}${insLine}
+    <div style="border-top:1px solid #e8e2d8;margin:10px 0 12px"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:13px;font-weight:700">Total</span>
+      <span style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:#e05c2a">${total}</span>
+    </div>
+    <div style="margin-top:14px;font-size:10px;color:#aaa;text-align:center">rentcarxtremds.com · +1 (809) 999-3324</div>
+  `;
+  document.body.appendChild(card);
+  html2canvas(card, {scale:2,backgroundColor:'#ffffff',useCORS:true}).then(canvas=>{
+    document.body.removeChild(card);
+    const link = document.createElement('a');
+    link.download = 'cotizacion-xtrem.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
 function filterCars(cat,btn){
   document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
