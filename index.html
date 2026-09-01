@@ -438,7 +438,8 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
               <option value="45">Hyundai Tucson — $45/day</option>
               <option value="45">Chevrolet Equinox — $45/day</option>
               <option value="50">ATV Four Wheel — $50/day</option>
-              <option value="95">Jeep Grand Cherokee — $95/day</option>
+              <option value="65">ATV Tour — $65/day</option>
+              <option value="75">Jeep Grand Cherokee — $75/day</option>
               <option value="110">Ford Explorer — $110/day</option>
               <option value="120">Chevrolet Tahoe — $120/day</option>
               <option value="120">Chevrolet Tahoe — $120/day</option>
@@ -514,6 +515,7 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
     <span class="ticker-item">Chevrolet Traverse</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">Scooters & Motos</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">ATV Four Wheel</span><span class="ticker-item"> &bull; </span>
+    <span class="ticker-item">ATV Tour</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">Chevrolet Equinox</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">Hyundai Tucson</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">Kia Rio</span><span class="ticker-item"> &bull; </span>
@@ -523,6 +525,7 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
     <span class="ticker-item">Chevrolet Traverse</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">Scooters & Motos</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">ATV Four Wheel</span><span class="ticker-item"> &bull; </span>
+    <span class="ticker-item">ATV Tour</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">Chevrolet Equinox</span><span class="ticker-item"> &bull; </span>
   </div>
 </div>
@@ -596,7 +599,7 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
         <div class="car-name">Jeep Grand Cherokee</div>
         <div class="car-divider"></div>
         <div class="car-footer">
-          <div><div class="car-from">Day from</div><div class="car-price">$95</div></div>
+          <div><div class="car-from">Day from</div><div class="car-price">$75</div></div>
           <a href="https://wa.me/18099993324?text=Hello!! I want to book the Jeep Grand Cherokee" class="car-book-btn">Book Now</a>
         </div>
       </div>
@@ -653,6 +656,17 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
         <div class="car-footer">
           <div><div class="car-from">Day from</div><div class="car-price">$50</div></div>
           <a href="https://wa.me/18099993324?text=Hello!! I want to book the ATV Four Wheel" class="car-book-btn">Book Now</a>
+        </div>
+      </div>
+    </div>
+    <div class="car-card" data-cat="adventure">
+      <div class="car-img-wrap"><span class="car-tag">Tour</span><img src="ATV.png" alt="ATV Tour"></div>
+      <div class="car-body">
+        <div class="car-name">ATV Tour</div>
+        <div class="car-divider"></div>
+        <div class="car-footer">
+          <div><div class="car-from">Day from</div><div class="car-price">$65</div></div>
+          <a href="https://wa.me/18099993324?text=Hello!! I want to book the ATV Tour" class="car-book-btn">Book Now</a>
         </div>
       </div>
     </div>
@@ -823,6 +837,20 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 function saveQuoteImage(){
+  // Mobile browsers (especially iOS Safari) don't reliably support the
+  // <a download> trick, so on phones we open the image in a new tab where
+  // the user can long-press it and choose "Save Image". The tab must be
+  // opened synchronously, inside this click handler, or iOS blocks it as
+  // a popup once the (async) image is ready.
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  let mobileWin = null;
+  if(isMobile){
+    mobileWin = window.open('', '_blank');
+    if(mobileWin){
+      mobileWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cotización X-TREM</title><style>body{margin:0;min-height:100vh;background:#111;display:flex;align-items:center;justify-content:center;font-family:sans-serif;color:#fff}</style></head><body><p>Generando tu cotización…</p></body></html>');
+      mobileWin.document.close();
+    }
+  }
   const panel = document.getElementById('priceBox');
   // Build a clean summary card off-screen
   const name = document.getElementById('clientName').value || '—';
@@ -870,10 +898,28 @@ function saveQuoteImage(){
   document.body.appendChild(card);
   html2canvas(card, {scale:2,backgroundColor:'#ffffff',useCORS:true}).then(canvas=>{
     document.body.removeChild(card);
-    const link = document.createElement('a');
-    link.download = 'cotizacion-xtrem.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    const dataUrl = canvas.toDataURL('image/png');
+    if(isMobile){
+      if(mobileWin && !mobileWin.closed){
+        mobileWin.document.open();
+        mobileWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cotización X-TREM</title><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif;padding:24px 16px}img{max-width:100%;height:auto;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.4)}p{color:#fff;font-size:14px;text-align:center;margin-top:18px;line-height:1.5}</style></head><body><img src="'+dataUrl+'" alt="Cotización X-TREM"><p>Mantén presionada la imagen y elige<br><strong>"Guardar imagen" / "Save Image"</strong></p></body></html>');
+        mobileWin.document.close();
+      }else{
+        // Popup was blocked — fall back to navigating this tab to the image
+        // so the user can still long-press to save it.
+        window.location.href = dataUrl;
+      }
+    }else{
+      const link = document.createElement('a');
+      link.download = 'cotizacion-xtrem.png';
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }).catch(()=>{
+    if(mobileWin && !mobileWin.closed) mobileWin.close();
+    alert('No se pudo generar la imagen de la cotización. Intenta de nuevo.');
   });
 }
 
