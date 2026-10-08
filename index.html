@@ -317,6 +317,14 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
   .airport-grid{grid-template-columns:1fr}
 }
 </style>
+<!-- Google tag (gtag.js) - Google Ads -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-16979145972"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-16979145972');
+</script>
 </head>
 <body>
 
@@ -1014,6 +1022,18 @@ function sendWhatsApp(){
   const msg = 'Hello! I would like to book a rental:\n\nCLIENT INFO:\nName: '+name+'\nPhone: '+phone+'\nFlight: '+flight+'\n\nRENTAL DETAILS:\nPickup location: '+pickup+'\nDrop-off location: '+dropoff+'\nDate: '+pd+' at '+pt+'\nReturn date: '+rd+'\nVehicle: '+vehicle+priceLine+'\n\nPlease confirm availability.';
   window.open('https://wa.me/18099993324?text='+encodeURIComponent(msg),'_blank');
 }
+</script>
+<script>
+/* Google Ads: cuenta cada clic en WhatsApp como conversion "Clic WhatsApp" */
+(function(){
+  function waConv(){ if (typeof gtag === 'function') gtag('event','conversion',{'send_to':'AW-16979145972/JQeOCM7m05UdEPTppKA_','value':1.0,'currency':'USD','transport_type':'beacon'}); }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href*="wa.me"]');
+    if (a) waConv();
+  }, true);
+  var _open = window.open;
+  window.open = function(u){ try{ if (u && String(u).indexOf('wa.me') > -1) waConv(); }catch(_){} return _open.apply(window, arguments); };
+})();
 </script>
 </body>
 </html>
