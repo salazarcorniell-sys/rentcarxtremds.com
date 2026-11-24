@@ -446,15 +446,24 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
               <option value="30">Kia Rio — $30/day</option>
               <option value="45">Hyundai Tucson — $45/day</option>
               <option value="45">Chevrolet Equinox — $45/day</option>
+              <option value="65">Changan CS35 Max — $65/day</option>
               <option value="50">ATV Four Wheel — $50/day</option>
               <option value="65">ATV Tour — $65/day</option>
               <option value="75">Jeep Grand Cherokee — $75/day</option>
               <option value="110">Ford Explorer — $110/day</option>
               <option value="120">Chevrolet Tahoe — $120/day</option>
-              <option value="120">Chevrolet Tahoe — $120/day</option>
             </select>
           </div>
         </div>
+
+        <!-- WIFI ADD-ON -->
+        <label class="ins-option" style="background:#fff7f2;border-color:var(--accent);margin-bottom:.65rem">
+          <input type="checkbox" id="wifiAddon" onchange="calcPrice()" style="width:16px;height:16px;accent-color:var(--accent);flex-shrink:0;margin-top:2px;cursor:pointer">
+          <div class="ins-option-body">
+            <div class="ins-option-title">📶 Add Portable WiFi — $15/day</div>
+            <div class="ins-option-desc">4G LTE hotspot, internet anywhere in the DR</div>
+          </div>
+        </label>
 
         <!-- INSURANCE ADD-ON -->
         <div class="insurance-box" id="insuranceBox">
@@ -489,6 +498,7 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
           <div class="price-row"><span>Subtotal</span><span id="subtotalLabel">—</span></div>
           <div class="price-row"><span>ITBIS (18%)</span><span id="taxLabel" style="color:var(--muted)">—</span></div>
           <div class="price-row" id="airportFeeRow" style="display:none"><span>Airport transfer</span><span id="airportFeeLabel" style="color:var(--accent)">—</span></div>
+          <div class="price-row" id="wifiFeeRow" style="display:none"><span>📶 Portable WiFi</span><span id="wifiFeeLabel" style="color:var(--accent)">—</span></div>
           <div class="price-row" id="insuranceFeeRow" style="display:none"><span>🛡️ Deductible coverage</span><span id="insuranceFeeLabel" style="color:var(--green)">—</span></div>
           <hr class="price-divider">
           <div class="price-total-row">
@@ -526,6 +536,7 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
     <span class="ticker-item">ATV Four Wheel</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">ATV Tour</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">Chevrolet Equinox</span><span class="ticker-item"> &bull; </span>
+    <span class="ticker-item">Changan CS35 Max</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">Hyundai Tucson</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">Kia Rio</span><span class="ticker-item"> &bull; </span>
     <span class="ticker-item">Chevrolet Tahoe</span><span class="ticker-item"> &bull; </span>
@@ -897,6 +908,8 @@ function saveQuoteImage(){
   const airRow = document.getElementById('airportFeeRow');
   const airportLine = airRow.style.display!=='none' ? `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">Airport transfer</span><span style="font-weight:700">${document.getElementById('airportFeeLabel').textContent}</span></div>` : '';
   const insRow = document.getElementById('insuranceFeeRow');
+  const wRow = document.getElementById('wifiFeeRow');
+  const wifiLine = wRow.style.display!=='none' ? `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">📶 Portable WiFi</span><span style="font-weight:700;color:#e05c2a">${document.getElementById('wifiFeeLabel').textContent}</span></div>` : '';
   const insLine = insRow.style.display!=='none' ? `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">🛡️ Deductible coverage</span><span style="font-weight:700;color:#1a3a2a">${document.getElementById('insuranceFeeLabel').textContent}</span></div>` : '';
 
   const card = document.createElement('div');
@@ -918,7 +931,7 @@ function saveQuoteImage(){
     <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">Tarifa/día</span><span style="font-weight:700">${rate}</span></div>
     <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">Subtotal</span><span style="font-weight:700">${subtotal}</span></div>
     <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#7a7369">ITBIS (18%)</span><span style="font-weight:700;color:#7a7369">${tax}</span></div>
-    ${airportLine}${insLine}
+    ${airportLine}${insLine}${wifiLine}
     <div style="border-top:1px solid #e8e2d8;margin:10px 0 12px"></div>
     <div style="display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:13px;font-weight:700">Total</span>
@@ -964,7 +977,7 @@ function filterCars(cat,btn){
 
 function getInsuranceRates(n){
   if(['Cherokee','Explorer','Tahoe','Traverse'].some(v=>n.includes(v))) return {reduced:20,zero:25};
-  if(['Picanto','Rio','Tucson','Equinox'].some(v=>n.includes(v))) return {reduced:15,zero:20};
+  if(['Picanto','Rio','Tucson','Equinox','Changan'].some(v=>n.includes(v))) return {reduced:15,zero:20};
   return null;
 }
 function calcPrice(){
@@ -988,7 +1001,8 @@ function calcPrice(){
     const insVal=document.querySelector('input[name="insurance"]:checked').value;
     const insDR=insRates?(insVal==='reduced'?insRates.reduced:insVal==='zero'?insRates.zero:0):0;
     const insFee=days*insDR;
-    const grandTotal=sub+tax+airportFee+insFee;
+    const wifiFee=document.getElementById('wifiAddon').checked?days*15:0;
+    const grandTotal=sub+tax+airportFee+insFee+wifiFee;
     document.getElementById('daysLabel').textContent=days+(days===1?' day':' days');
     document.getElementById('rateLabel').textContent='$'+rate+' USD/day';
     document.getElementById('subtotalLabel').textContent='$'+sub+' USD';
@@ -997,6 +1011,8 @@ function calcPrice(){
     if(airportFee>0){airRow.style.display='flex';document.getElementById('airportFeeLabel').textContent='$'+airportFee+' USD';}else{airRow.style.display='none';}
     const insRow=document.getElementById('insuranceFeeRow');
     if(insFee>0){insRow.style.display='flex';document.getElementById('insuranceFeeLabel').textContent='$'+insFee+' USD';}else{insRow.style.display='none';}
+    const wifiRow=document.getElementById('wifiFeeRow');
+    if(wifiFee>0){wifiRow.style.display='flex';document.getElementById('wifiFeeLabel').textContent='$'+wifiFee+' USD';}else{wifiRow.style.display='none';}
     document.getElementById('totalLabel').textContent='$'+grandTotal+' USD';
     box.style.display='block';
   }else{box.style.display='none';}
@@ -1028,13 +1044,14 @@ function sendWhatsApp(){
     const tax=Math.round(sub*0.18);
     const insDR=insRates2?(insVal==='reduced'?insRates2.reduced:insVal==='zero'?insRates2.zero:0):0;
     const insFee=days*insDR;
-    const total=sub+tax+airportFee+insFee;
+    const wifiFee=document.getElementById('wifiAddon').checked?days*15:0;
+    const total=sub+tax+airportFee+insFee+wifiFee;
     let airportLine=airportFee>0?'\nAirport transfer: $'+airportFee+' USD':'';
     let insLine='';
     if(insVal==='reduced') insLine='\nInsurance (Reduced deductible $500): $'+insFee+' USD';
     else if(insVal==='zero') insLine='\nInsurance (Zero deductible): $'+insFee+' USD';
     else insLine='\nInsurance: No coverage (Deductible $1,300)';
-    priceLine='\n\nPRICE ESTIMATE:\nSubtotal: $'+sub+' USD ('+days+' days x $'+rate+'/day)\nITBIS (18%): $'+tax+' USD'+airportLine+insLine+'\nTOTAL: $'+total+' USD';
+    priceLine='\n\nPRICE ESTIMATE:\nSubtotal: $'+sub+' USD ('+days+' days x $'+rate+'/day)\nITBIS (18%): $'+tax+' USD'+airportLine+insLine+(wifiFee>0?'\nPortable WiFi: $'+wifiFee+' USD ('+days+' days x $15/day)':'')+'\nTOTAL: $'+total+' USD';
   }
   const msg = 'Hello! I would like to book a rental:\n\nCLIENT INFO:\nName: '+name+'\nPhone: '+phone+'\nFlight: '+flight+'\n\nRENTAL DETAILS:\nPickup location: '+pickup+'\nDrop-off location: '+dropoff+'\nDate: '+pd+' at '+pt+'\nReturn date: '+rd+'\nVehicle: '+vehicle+priceLine+'\n\nPlease confirm availability.';
   window.open('https://wa.me/18099993324?text='+encodeURIComponent(msg),'_blank');
