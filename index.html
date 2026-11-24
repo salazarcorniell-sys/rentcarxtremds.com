@@ -174,11 +174,10 @@ nav{position:fixed;inset:0 0 auto;z-index:200;height:68px;display:flex;align-ite
 .car-card{background:white;border-radius:14px;overflow:hidden;border:1px solid var(--border);transition:transform .25s,box-shadow .25s;cursor:pointer}
 .car-card:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,.1)}
 .car-card[data-cat].hidden{display:none}
-.car-img-wrap{height:160px;background:#f6f6f6;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;border-bottom:1px solid var(--border)}
+.car-img-wrap{height:160px;background:#ffffff;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;border-bottom:1px solid var(--border)}
 .car-img-wrap > span:not(.car-tag){font-size:5rem;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.10));transition:transform .3s}
 .car-card:hover .car-img-wrap > span:not(.car-tag){transform:scale(1.1) translateY(-4px)}
-.car-img-wrap img{width:100%;height:100%;object-fit:contain;padding:12px 20px;box-sizing:border-box;mix-blend-mode:multiply;display:block;transition:transform .3s}
-.car-img-wrap img[src="cherokee.jpg"]{mix-blend-mode:normal}
+.car-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
 .car-card:hover .car-img-wrap img{transform:scale(1.04)}
 .car-tag{position:absolute;top:.8rem;left:.8rem;background:var(--dark);color:white;font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:.3rem .7rem;border-radius:100px}
 .car-tag.popular{background:var(--accent)}
@@ -603,6 +602,17 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
         </div>
       </div>
     </div>
+    <div class="car-card" data-cat="suv">
+      <div class="car-img-wrap"><span class="car-tag popular">New</span><img src="changan-cs35-max.jpg" alt="Changan CS35 Max"></div>
+      <div class="car-body">
+        <div class="car-name">Changan CS35 Max</div>
+        <div class="car-divider"></div>
+        <div class="car-footer">
+          <div><div class="car-from">Day from</div><div class="car-price">$65</div></div>
+          <a href="https://wa.me/18099993324?text=Hello!! I want to book the Changan CS35 Max" class="car-book-btn">Book Now</a>
+        </div>
+      </div>
+    </div>
     <div class="car-card" data-cat="luxury">
       <div class="car-img-wrap"><span class="car-tag luxury">Premium</span><img src="cherokee.jpg" alt="Jeep Grand Cherokee"></div>
       <div class="car-body">
@@ -712,6 +722,13 @@ footer{background:var(--dark);padding:4rem 4rem 2rem}
       <span class="perk-icon">&#128172;</span>
       <div class="perk-title">24/7 WhatsApp Support</div>
       <div class="perk-desc">Real human support, any hour. We're always just a message away.</div>
+    </div>
+    <div class="perk-box" style="grid-column:1/-1;display:flex;align-items:center;gap:1.5rem">
+      <img src="wifi-hotspot.jpg" alt="Portable 4G LTE WiFi hotspot" style="width:110px;height:110px;border-radius:12px;flex-shrink:0;object-fit:cover">
+      <div>
+      <div class="perk-title">Portable WiFi &mdash; $15/day</div>
+      <div class="perk-desc">Stay connected anywhere in the DR. Add a portable WiFi hotspot to your rental for $15 per day. <a href="https://wa.me/18099993324?text=Hello!! I want to rent the portable WiFi ($15/day)" style="background:none;padding:0;color:white;text-decoration:underline;font-size:.8rem;letter-spacing:0;text-transform:none;font-weight:700;white-space:nowrap">Ask on WhatsApp &rarr;</a></div>
+      </div>
     </div>
   </div>
 </section>
